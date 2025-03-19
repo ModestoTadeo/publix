@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertisseur de calendrier</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        input, button { margin: 10px; padding: 5px; }
+    </style>
+    <script>
+        function convertirDate(dateString) {
+            const baseDate = new Date(2008, 9, 9); // 9 octobre 2008
+            const inputDate = new Date(dateString);
+            const diffJours = Math.floor((inputDate - baseDate) / (1000 * 60 * 60 * 24));
+            const annee = Math.floor(diffJours / 40) + 1;
+            const jour = (diffJours % 40) + 1;
+            const moisIndex = Math.floor((jour - 1) / 10);
+            const moisNoms = ["Dectembre", "Nival", "Vaudion", "Xandrier"];
+            const mois = moisNoms[moisIndex];
+            const jourDansMois = ((jour - 1) % 10) + 1;
+            return `${jourDansMois} ${mois} an ${annee}`;
+        }
+
+        function afficherDateActuelle() {
+            const aujourdHui = new Date();
+            document.getElementById("date-actuelle").innerText = "Aujourd'hui dans ton calendrier : " + convertirDate(aujourdHui.toISOString().split('T')[0]);
+        }
+
+        function convertirSaisie() {
+            const dateInput = document.getElementById("date-input").value;
+            if (dateInput) {
+                document.getElementById("resultat").innerText = "Date convertie : " + convertirDate(dateInput);
+            }
+        }
+    </script>
+</head>
+<body onload="afficherDateActuelle()">
+    <h1>Convertisseur de calendrier</h1>
+    <p id="date-actuelle"></p>
+    <input type="date" id="date-input">
+    <button onclick="convertirSaisie()">Convertir</button>
+    <p id="resultat"></p>
+</body>
+</html>
