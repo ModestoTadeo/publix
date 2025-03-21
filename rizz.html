@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Calendar</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 800px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #silver-counter, #settings-btn {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        #settings-btn:hover {
+            background: #ddd;
+        }
+        #gnome-box {
+            width: 150px;
+            height: 150px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            font-size: 50px;
+        }
+        .calendar-container {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            padding: 10px;
+        }
+        .day {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out, background 0.3s;
+        }
+        .day:hover {
+            transform: scale(1.05);
+        }
+        .future-day {
+            background: #ddd !important;
+            pointer-events: none;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: 400px;
+        }
+        .popup select, textarea {
+            width: 100%;
+            margin-top: 10px;
+        }
+        textarea {
+            height: 100px;
+            font-family: monospace;
+            background: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 5px;
+            resize: vertical;
+        }
+        .blue { background-color: lightblue; }
+        .green { background-color: lightgreen; }
+        .yellow { background-color: yellow; }
+        .red { background-color: lightcoral; }
+        @keyframes silverEffect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); color: gold; }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div id="silver-counter">Silver: 0 oz</div>
+        <div class="title">📅 Life Journal Calendar</div>
+        <div id="settings-btn">⚙️ Settings</div>
+    </div>
+    <div id="gnome-box">🧙‍♂️</div>
+    <button onclick="showCalendar()">📆 View Full Calendar</button>
+    <div class="calendar-container" id="calendar-container">
+        <div class="calendar" id="calendar"></div>
+    </div>
+    <div class="popup" id="popup">
+        <h2 id="popup-date"></h2>
+        <select id="color">
+            <option value="blue">🔵 Blue</option>
+            <option value="green">🟢 Green</option>
+            <option value="yellow">🟡 Yellow</option>
+            <option value="red">🔴 Red</option>
+        </select>
+        <textarea id="justification" placeholder="Justify your choice (Markdown supported)"></textarea>
+        <textarea id="notes" placeholder="What happened today?"></textarea>
+        <button onclick="saveChoice()">Confirm</button>
+        <button onclick="closePopup()">Cancel</button>
+    </div>
+    <script>
+        let silver = 0;
+        const calendar = document.getElementById("calendar");
+        const popup = document.getElementById("popup");
+        const popupDate = document.getElementById("popup-date");
+        let selectedDay = null;
+        
+        let startDate = new Date(2024, 0, 13);
+        let endDate = new Date(2026, 9, 9);
+        let today = new Date();
+        let yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+        today.setHours(0, 0, 0, 0);
+
+        let currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+            let day = document.createElement("div");
+            day.classList.add("day");
+            if (currentDate > today) {
+                day.classList.add("future-day");
+            }
+            day.dataset.fullDate = currentDate.toDateString();
+            day.onclick = () => openPopup(day);
+            calendar.appendChild(day);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        function showCalendar() {
+            document.getElementById("calendar-container").style.display = "block";
+        }
+        function openPopup(day) {
+            selectedDay = day;
+            popup.style.display = "block";
+            popupDate.textContent = day.dataset.fullDate;
+        }
+        function closePopup() {
+            popup.style.display = "none";
+        }
+        function saveChoice() {
+            if (selectedDay) {
+                selectedDay.className = "day " + document.getElementById("color").value;
+                closePopup();
+                silver += 1;
+                document.getElementById("silver-counter").textContent = "Silver: " + silver + " oz";
+            }
+        }
+        window.onload = () => {
+            let yesterdayBox = [...document.querySelectorAll(".day")].find(d => d.dataset.fullDate === yesterday.toDateString());
+            if (yesterdayBox) openPopup(yesterdayBox);
+        };
+    </script>
+</body>
+</html>
