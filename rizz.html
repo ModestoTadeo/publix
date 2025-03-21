@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Calendar</title>
+    <title>Gnome Calendar</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -47,7 +47,12 @@
             justify-content: center;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            font-size: 50px;
+        }
+        #gnome-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
         }
         .calendar-container {
             display: none;
@@ -118,15 +123,21 @@
 </head>
 <body>
     <div class="header">
-        <div id="silver-counter">Silver: 0 oz</div>
-        <div class="title">📅 Life Journal Calendar</div>
-        <div id="settings-btn">⚙️ Settings</div>
+        <div id="silver-counter">Gnome Silver: 0 oz 🏆</div>
+        <div class="title">🧙‍♂️ The Gnome Calendar 🏡</div>
+        <div id="settings-btn">⚙️ Gnome Settings</div>
     </div>
-    <div id="gnome-box">🧙‍♂️</div>
-    <button onclick="showCalendar()">📆 View Full Calendar</button>
+    <div id="gnome-box">
+        <img src="https://raw.githubusercontent.com/ModestoTadeo/publix/refs/heads/main/DALL%C2%B7E%202025-03-20%2021.29.04%20-%20An%20N64-style%20garden%20gnome%20with%20VHS-quality%20visuals.%20The%20gnome%20has%20a%20red%20hat%20covering%20part%20of%20its%20face%2C%20closed%20eyes%2C%20a%20blue%20shirt%2C%20green%20pants%2C%20and%20bla.webp" alt="Garden Gnome">
+    </div>
+    <button onclick="showCalendar()">📆 View Full Gnome Calendar</button>
     <div class="calendar-container" id="calendar-container">
         <div class="calendar" id="calendar"></div>
     </div>
+</body>
+</html>
+</body>
+</html>
     <div class="popup" id="popup">
         <h2 id="popup-date"></h2>
         <select id="color">
@@ -182,7 +193,7 @@
                 selectedDay.className = "day " + document.getElementById("color").value;
                 closePopup();
                 silver += 1;
-                document.getElementById("silver-counter").textContent = "Silver: " + silver + " oz";
+                document.getElementById("silver-counter").textContent = "Gnome Silver: " + silver + " oz 🏆";
             }
         }
         window.onload = () => {
